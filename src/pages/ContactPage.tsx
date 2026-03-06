@@ -1,8 +1,10 @@
+import { useForm, ValidationError } from '@formspree/react';
 import { PageHero } from '../components';
 import { useScrollAnimation } from '../hooks';
 
 export default function ContactPage() {
   useScrollAnimation();
+  const [state, handleSubmit] = useForm("xgonwgjn");
 
   return (
     <>
@@ -16,36 +18,55 @@ export default function ContactPage() {
         <div className="container grid-2">
           <div className="form-wrap fade-in-left">
             <h2>Quote Request Form</h2>
-            <form action="#" method="post">
-              <label htmlFor="name">Name</label>
-              <input id="name" name="name" type="text" required />
-              <label htmlFor="phone">Phone</label>
-              <input id="phone" name="phone" type="tel" required />
-              <label htmlFor="email">Email</label>
-              <input id="email" name="email" type="email" required />
-              <label htmlFor="service">Service Needed</label>
-              <select id="service" name="service" required>
-                <option value="">Select a service</option>
-                <option>Brick Masonry</option>
-                <option>Stone Masonry</option>
-                <option>Block Walls</option>
-                <option>Retaining Walls</option>
-                <option>Pavers / Driveways</option>
-                <option>Patios</option>
-                <option>Outdoor Fireplaces</option>
-                <option>Foundation Work</option>
-                <option>Residential Masonry</option>
-                <option>Brick Veneer / Chimneys</option>
-              </select>
-              <label htmlFor="description">Project Description</label>
-              <textarea
-                id="description"
-                name="description"
-                required
-                placeholder="Share location, timeline, and what you want built"
-              ></textarea>
-              <button className="btn btn-primary" type="submit">Get a Free Quote</button>
-            </form>
+            {state.succeeded ? (
+              <div className="form-success">
+                <h3>Thank you for your request!</h3>
+                <p>We've received your quote request and will get back to you within 24 hours.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="name">Name</label>
+                <input id="name" name="name" type="text" required />
+                <ValidationError prefix="Name" field="name" errors={state.errors} />
+
+                <label htmlFor="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" required />
+                <ValidationError prefix="Phone" field="phone" errors={state.errors} />
+
+                <label htmlFor="email">Email</label>
+                <input id="email" name="email" type="email" required />
+                <ValidationError prefix="Email" field="email" errors={state.errors} />
+
+                <label htmlFor="service">Service Needed</label>
+                <select id="service" name="service" required>
+                  <option value="">Select a service</option>
+                  <option>Brick Masonry</option>
+                  <option>Stone Masonry</option>
+                  <option>Block Walls</option>
+                  <option>Retaining Walls</option>
+                  <option>Pavers / Driveways</option>
+                  <option>Patios</option>
+                  <option>Outdoor Fireplaces</option>
+                  <option>Foundation Work</option>
+                  <option>Residential Masonry</option>
+                  <option>Brick Veneer / Chimneys</option>
+                </select>
+                <ValidationError prefix="Service" field="service" errors={state.errors} />
+
+                <label htmlFor="description">Project Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                  placeholder="Share location, timeline, and what you want built"
+                ></textarea>
+                <ValidationError prefix="Description" field="description" errors={state.errors} />
+
+                <button className="btn btn-primary" type="submit" disabled={state.submitting}>
+                  {state.submitting ? 'Sending...' : 'Get a Free Quote'}
+                </button>
+              </form>
+            )}
           </div>
           <aside className="card fade-in-right">
             <h2>Direct Contact</h2>
